@@ -5,6 +5,8 @@ import { Route } from "react-router-dom";
 import Projects from "./components/Projects";
 import ProjectDetails from "./components/ProjectDetails";
 
+import "bootstrap/dist/css/bootstrap.css";
+
 function App() {
   return (
     <div className="App">

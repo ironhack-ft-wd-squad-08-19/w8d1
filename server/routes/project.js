@@ -28,6 +28,7 @@ router.post("/", (req, res) => {
 // returns a list of all projects
 router.get("/", (req, res) => {
   Project.find()
+    .populate("tasks")
     .then(projects => {
       res.json(projects);
     })
@@ -41,6 +42,7 @@ router.get("/", (req, res) => {
 router.get("/:id", (req, res) => {
   // check if req.params.id is valid, if not respond with a 4xx status code
   Project.findById(req.params.id)
+    .populate("tasks")
     .then(project => {
       if (!project) {
         res.status(404).json(project);

@@ -27,7 +27,7 @@ export default class Projects extends Component {
 
   render() {
     return (
-      <div>
+      <div className="projects-container">
         <AddProject getData={this.getData} />
         <ProjectList projects={this.state.projects} />
       </div>
