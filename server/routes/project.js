@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const Project = require("../models/Project");
+const Task = require("../models/Task");
 
 // POST /api/projects
 router.post("/", (req, res) => {
@@ -27,6 +28,55 @@ router.get("/", (req, res) => {
   Project.find()
     .then(projects => {
       res.json(projects);
+    })
+    .catch(err => {
+      res.json(err);
+    });
+});
+
+// GET /api/projects/:id
+router.get("/:id", (req, res) => {
+  // check if req.params.id is valid, if not respond with a 4xx status code
+  Project.findById(req.params.id)
+    .then(project => {
+      if (!project) {
+        res.status(404).json(project);
+      } else {
+        res.json(project);
+      }
+    })
+    .catch(err => {
+      res.json(err);
+    });
+});
+
+// PUT /api/projects/:id
+router.put("/:id", (req, res) => {
+  const { title, description } = req.body;
+
+  Project.findByIdAndUpdate(
+    req.params.id,
+    { title, description },
+    // { new: true } ensures that we are getting the updated document in the .then callback
+    { new: true }
+  )
+    .then(project => {
+      res.json(project);
+    })
+    .catch(err => {
+      res.json(err);
+    });
+});
+
+// DELETE /api/projects/:id
+router.delete("/:id", (req, res) => {
+  // delete the project
+  Project.findByIdAndDelete(req.params.id)
+    .then(project => {
+      // Deletes all the documents in the Task collection where the value for the `_id` field is present in the `project.tasks` array
+      return Task.deleteMany({ _id: { $in: project.tasks } }).then(() => {
+        res.json({ message: "ok" });
+      });
     })
     .catch(err => {
       res.json(err);
