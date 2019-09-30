@@ -1,16 +1,21 @@
 import React, { Component } from "react";
+import EditProject from "./EditProject";
+import AddTask from "./AddTask";
+import TaskList from "./TaskList";
+import { Button } from "react-bootstrap";
 import axios from "axios";
 
 export default class ProjectDetails extends Component {
   state = {
     project: null,
-    showForm: false,
+    editForm: false,
+    addTask: false,
     title: "",
     description: "",
     error: null
   };
 
-  componentDidMount = () => {
+  getData = () => {
     const id = this.props.match.params.id;
     axios
       .get(`/api/projects/${id}`)
@@ -30,9 +35,13 @@ export default class ProjectDetails extends Component {
       });
   };
 
+  componentDidMount = () => {
+    this.getData();
+  };
+
   toggleEditForm = () => {
     this.setState({
-      showForm: !this.state.showForm
+      editForm: !this.state.editForm
     });
   };
 
@@ -57,7 +66,7 @@ export default class ProjectDetails extends Component {
           project: response.data,
           title: response.data.title,
           description: response.data.description,
-          showForm: false
+          editForm: false
         });
       })
       .catch(err => {
@@ -68,7 +77,6 @@ export default class ProjectDetails extends Component {
   deleteProject = () => {
     const id = this.props.match.params.id;
     axios.delete(`/api/projects/${id}`).then(() => {
-      console.log(this.props.history);
       this.props.history.push("/projects");
     });
   };
@@ -76,39 +84,43 @@ export default class ProjectDetails extends Component {
   render() {
     if (this.state.error) return <div>{this.state.error}</div>;
     else if (!this.state.project) return <></>;
+
     // const { title, description } = this.state.project;
 
     return (
       <div>
         <h1>{this.state.project.title}</h1>
         <p>{this.state.project.description}</p>
-        <button onClick={this.toggleEditForm}>Show Edit form</button>
-        <button onClick={this.deleteProject}>Delete project</button>
+
+        <Button onClick={this.toggleEditForm}>Show Edit form</Button>
+        <Button
+          onClick={() => this.setState({ taskForm: !this.state.taskForm })}
+        >
+          Show Task form
+        </Button>
+        <Button variant="danger" onClick={this.deleteProject}>
+          Delete project
+        </Button>
+
         {/* form that is displayed when the edit button is clicked */}
-        {this.state.showForm && (
-          <div>
-            <h2>Edit Form</h2>
-            <form onSubmit={this.handleSubmit}>
-              <label htmlFor="title">Title: </label>
-              <input
-                type="text"
-                name="title"
-                id="title"
-                value={this.state.title}
-                onChange={this.handleChange}
-              />
-              <label htmlFor="description">Description: </label>
-              <input
-                type="text"
-                name="description"
-                id="description"
-                value={this.state.description}
-                onChange={this.handleChange}
-              />
-              <button type="submit">Edit a project</button>
-            </form>
-          </div>
+        {this.state.editForm && (
+          <EditProject
+            // spread properties from the state (title and description will be needed in the child component)
+            {...this.state}
+            handleChange={this.handleChange}
+            handleSubmit={this.handleSubmit}
+          />
         )}
+
+        {this.state.taskForm && (
+          <AddTask
+            projectId={this.state.project._id}
+            getData={this.getData}
+            hideForm={() => this.setState({ taskForm: false })}
+          />
+        )}
+
+        <TaskList tasks={this.state.project.tasks} />
       </div>
     );
   }
