@@ -6,7 +6,8 @@ export default class ProjectDetails extends Component {
     project: null,
     showForm: false,
     title: "",
-    description: ""
+    description: "",
+    error: null
   };
 
   componentDidMount = () => {
@@ -21,11 +22,15 @@ export default class ProjectDetails extends Component {
         });
       })
       .catch(err => {
-        console.log(err);
+        console.log(err.response);
+        // handle err.response depending on err.response.status
+        if (err.response.status === 404) {
+          this.setState({ error: "Not found" });
+        }
       });
   };
 
-  handleClick = () => {
+  toggleEditForm = () => {
     this.setState({
       showForm: !this.state.showForm
     });
@@ -60,16 +65,25 @@ export default class ProjectDetails extends Component {
       });
   };
 
-  render() {
-    if (!this.state.project) return <></>;
+  deleteProject = () => {
+    const id = this.props.match.params.id;
+    axios.delete(`/api/projects/${id}`).then(() => {
+      console.log(this.props.history);
+      this.props.history.push("/projects");
+    });
+  };
 
+  render() {
+    if (this.state.error) return <div>{this.state.error}</div>;
+    else if (!this.state.project) return <></>;
     // const { title, description } = this.state.project;
 
     return (
       <div>
         <h1>{this.state.project.title}</h1>
         <p>{this.state.project.description}</p>
-        <button onClick={this.handleClick}>Show Edit form</button>
+        <button onClick={this.toggleEditForm}>Show Edit form</button>
+        <button onClick={this.deleteProject}>Delete project</button>
         {/* form that is displayed when the edit button is clicked */}
         {this.state.showForm && (
           <div>

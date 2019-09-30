@@ -4,7 +4,12 @@ import { Link } from "react-router-dom";
 const Navbar = () => {
   return (
     <nav>
-      <ul style={{ listStyleType: "none", display: "flex" }}>
+      <ul
+        style={{
+          listStyleType: "none",
+          display: "flex"
+        }}
+      >
         <li>
           <Link to="/">Home</Link>
         </li>
