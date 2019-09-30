@@ -4,6 +4,7 @@ const Project = require("../models/Project");
 const Task = require("../models/Task");
 
 // POST /api/projects
+// create a new `project` resource
 router.post("/", (req, res) => {
   // const { title, description, tasks = [] } = req.body;
   const title = req.body.title;
@@ -24,6 +25,7 @@ router.post("/", (req, res) => {
 });
 
 // GET /api/projects
+// returns a list of all projects
 router.get("/", (req, res) => {
   Project.find()
     .then(projects => {
@@ -35,6 +37,7 @@ router.get("/", (req, res) => {
 });
 
 // GET /api/projects/:id
+// return a specific `project` resource with a given id
 router.get("/:id", (req, res) => {
   // check if req.params.id is valid, if not respond with a 4xx status code
   Project.findById(req.params.id)
