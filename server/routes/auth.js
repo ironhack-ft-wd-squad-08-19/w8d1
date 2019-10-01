@@ -65,4 +65,9 @@ router.delete("/logout", (req, res) => {
   res.json({ message: "Successful logout" });
 });
 
+// checks if the user has an active session
+router.get("/loggedin", (req, res) => {
+  res.json(req.user);
+});
+
 module.exports = router;

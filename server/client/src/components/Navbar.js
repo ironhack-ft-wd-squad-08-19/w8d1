@@ -9,15 +9,21 @@ const Navbar = props => {
       <Nav.Brand>
         <Link to="/">Home</Link>
       </Nav.Brand>
-      <Nav.Brand>
-        <Link to="/projects">Projects</Link>
-      </Nav.Brand>
-      <Nav.Brand>
-        <Link to="/signup">Signup</Link>
-      </Nav.Brand>
-      <Nav.Brand>
-        <Link to="/login">Login</Link>
-      </Nav.Brand>
+
+      {props.user ? (
+        <Nav.Brand>
+          <Link to="/projects">Projects</Link>
+        </Nav.Brand>
+      ) : (
+        <>
+          <Nav.Brand>
+            <Link to="/signup">Signup</Link>
+          </Nav.Brand>
+          <Nav.Brand>
+            <Link to="/login">Login</Link>
+          </Nav.Brand>
+        </>
+      )}
     </Nav>
   );
 };
