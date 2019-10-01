@@ -11,6 +11,9 @@ const Navbar = () => {
       <Nav.Brand>
         <Link to="/projects">Projects</Link>
       </Nav.Brand>
+      <Nav.Brand>
+        <Link to="/signup">Signup</Link>
+      </Nav.Brand>
     </Nav>
   );
 };
