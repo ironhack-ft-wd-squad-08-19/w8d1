@@ -10,11 +10,13 @@ router.post("/", (req, res) => {
   const title = req.body.title;
   const description = req.body.description;
   const tasks = [];
+  const owner = req.user._id;
 
   Project.create({
     title: title,
     description: description,
-    tasks: tasks
+    tasks: tasks,
+    owner: owner
   })
     .then(project => {
       res.json(project);

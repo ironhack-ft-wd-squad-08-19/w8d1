@@ -2,12 +2,13 @@ const express = require("express");
 const router = express.Router();
 const User = require("../models/User");
 const bcrypt = require("bcrypt");
+const passport = require("passport");
 
 // POST api/auth/signup
 router.post("/signup", (req, res) => {
   const { username, password } = req.body;
 
-  if (password.length < 8) {
+  if (!password || password.length < 8) {
     return res
       .status(400)
       .json({ message: "Your password must be 8 char. min." });
@@ -38,8 +39,30 @@ router.post("/signup", (req, res) => {
     });
 });
 
-// login route with POST
+// POST /api/auth/login
+router.post("/login", (req, res) => {
+  passport.authenticate("local", (err, user) => {
+    if (err) {
+      return res.status(500).json({ message: "Error while authenticating" });
+    }
+    if (!user) {
+      return res.status(400).json({ message: "Wrong credentials" });
+    }
+    req.login(user, err => {
+      if (err) {
+        return res
+          .status(500)
+          .json({ message: "Error while attempting to login" });
+      }
+      return res.json(user);
+    });
+  })(req, res);
+});
 
-// logout route with ???
+// DELETE /api/auth/logout
+router.delete("/logout", (req, res) => {
+  req.logout();
+  res.json({ message: "Successful logout" });
+});
 
 module.exports = router;
