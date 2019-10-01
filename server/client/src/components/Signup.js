@@ -23,11 +23,16 @@ export default class Signup extends Component {
     const { username, password } = this.state;
 
     signup(username, password).then(data => {
-      console.log(data);
       if (data.message) {
         this.setState({
-          message: data.message
+          message: data.message,
+          username: "",
+          password: ""
         });
+      } else {
+        // successfully signed up
+        // update the state for the parent component
+        this.props.setUser(data);
       }
     });
   };
