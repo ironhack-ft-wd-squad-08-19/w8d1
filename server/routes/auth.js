@@ -30,7 +30,16 @@ router.post("/signup", (req, res) => {
 
       return User.create({ username: username, password: hash }).then(
         dbUser => {
-          res.json(dbUser);
+          // Login the user on signup
+
+          req.login(dbUser, err => {
+            if (err) {
+              return res
+                .status(500)
+                .json({ message: "Error while attempting to login" });
+            }
+            res.json(dbUser);
+          });
         }
       );
     })
@@ -66,6 +75,7 @@ router.delete("/logout", (req, res) => {
 });
 
 // checks if the user has an active session
+// GET /api/auth/loggedin
 router.get("/loggedin", (req, res) => {
   res.json(req.user);
 });

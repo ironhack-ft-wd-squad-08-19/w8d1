@@ -87,6 +87,14 @@ export default class ProjectDetails extends Component {
 
     // const { title, description } = this.state.project;
 
+    const owner = this.state.project.owner;
+    const currentUser = this.props.user;
+
+    // const canDelete = !!(currentUser && currentUser._id === owner);
+
+    let canDelete = false;
+    if (currentUser && currentUser._id === owner) canDelete = true;
+
     return (
       <div>
         <h1>{this.state.project.title}</h1>
@@ -98,9 +106,11 @@ export default class ProjectDetails extends Component {
         >
           Show Task form
         </Button>
-        <Button variant="danger" onClick={this.deleteProject}>
-          Delete project
-        </Button>
+        {canDelete && (
+          <Button variant="danger" onClick={this.deleteProject}>
+            Delete project
+          </Button>
+        )}
 
         {/* form that is displayed when the edit button is clicked */}
         {this.state.editForm && (

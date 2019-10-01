@@ -1,6 +1,6 @@
 import React from "react";
 import Navbar from "./components/Navbar";
-import { Route } from "react-router-dom";
+import { Route, Redirect } from "react-router-dom";
 import Projects from "./components/Projects";
 import ProjectDetails from "./components/ProjectDetails";
 import TaskDetails from "./components/TaskDetails";
@@ -12,7 +12,7 @@ import "./App.css";
 
 class App extends React.Component {
   state = {
-    user: null
+    user: this.props.user
   };
 
   setUser = user => {
@@ -24,9 +24,32 @@ class App extends React.Component {
   render() {
     return (
       <div className="App">
-        <Navbar user={this.state.user} />
-        <Route exact path="/projects" component={Projects} />
-        <Route exact path="/projects/:id" component={ProjectDetails} />
+        <Navbar user={this.state.user} setUser={this.setUser} />
+
+        {/* prevent a non-logged in user to access certain paths */}
+        <Route
+          exact
+          path="/projects"
+          render={props => {
+            if (this.state.user) return <Projects {...props} />;
+            else return <Redirect to="/" />;
+          }}
+        />
+
+        {/* <Protected
+          exact
+          path="/projects"
+          foo="bar"
+          user={this.state.user}
+          component={Projects}
+        /> */}
+
+        <Route
+          exact
+          path="/projects/:id"
+          render={props => <ProjectDetails {...props} user={this.state.user} />}
+        />
+
         <Route exact path="/tasks/:id" component={TaskDetails} />
         <Route
           exact

@@ -1,6 +1,13 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Navbar as Nav } from "react-bootstrap";
+import { logout } from "../services/api";
+
+const handleLogout = props => {
+  logout().then(() => {
+    props.setUser(null);
+  });
+};
 
 const Navbar = props => {
   return (
@@ -11,9 +18,16 @@ const Navbar = props => {
       </Nav.Brand>
 
       {props.user ? (
-        <Nav.Brand>
-          <Link to="/projects">Projects</Link>
-        </Nav.Brand>
+        <>
+          <Nav.Brand>
+            <Link to="/projects">Projects</Link>
+          </Nav.Brand>
+          <Nav.Brand>
+            <Link to="/" onClick={() => handleLogout(props)}>
+              Logout
+            </Link>
+          </Nav.Brand>
+        </>
       ) : (
         <>
           <Nav.Brand>
